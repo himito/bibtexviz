@@ -3,19 +3,22 @@ const editions = ["2023", "2021", "2020", "2018", "2017", "2014", "2013", "2010"
 // memoryCache will store ranking data grouped by edition
 const coreRankingCache = {};  // e.g. { "CORE2023": [ { title: "...", acronym: "...", rank: "A" }, ... ] }
 
+let coreRankingsReady = loadCoreRankings(editions); 
+
 async function loadCoreRankings(editions) {
   for (const year of editions) {
     const path = `/resources/core_rankings/CORE${year}.csv`;
     try {
       const response = await fetch(path);
       const csvText = await response.text();
-      //const rows = csvText.trim().split('\n').map(line => line.split(','));
       const rows = d3.csvParseRows(csvText.trim());
       coreRankingCache[`CORE${year}`] = rows;
     } catch (e) {
       console.error(`Could not load CORE${year}:`, e);
     }
   }
+  console.log('Core rankings fully loaded');
+  return true; // Indica que terminó
 }
 
 function getICORERanking(conferenceName, acronym, year) {
@@ -44,7 +47,8 @@ function getICORERanking(conferenceName, acronym, year) {
   return {edition: `CORE${year}`, rank: '-'};; // no match found
 }
 
-(async () => {
+window.coreRankingsReady = (async () => {
   await loadCoreRankings(editions);
-  console.log('Core rankings loaded');
+  console.log('Core rankings loaded and ready');
+  return true;
 })();

@@ -1,6 +1,10 @@
 let bibtexContent = "";
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async() => {
+    if (window.coreRankingsReady) {
+        await window.coreRankingsReady;
+    }
+
     const form = document.getElementById('dataForm');
     const chart = document.getElementById('chart');
 
