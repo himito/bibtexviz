@@ -1,19 +1,20 @@
 /**
  * Processes a text string to return it as is if it is short,
- * or to find/create an acronym if it is long. The created acronym
- * will not exceed the character limit N.
+ * checks a manual mapping, or finds/creates an acronym if it is long.
  *
  * @param {string} text The text string to be processed.
  * @param {number} N The maximum number of characters.
+ * @param {Object} [termMap={}] Manual mapping of terms to acronyms.
  * @returns {string} The original string or an acronym (possibly truncated).
  */
-function getAcronymOrTruncate(text, N) {
+function getAcronymOrTruncate(text, N, termMap = {}) {
     // 1. Handle invalid or empty input cases.
     if (typeof text !== 'string' || !text) {
         return '';
     }
 
     text = text.trim();
+    
     // 2. Return the string as is if its length is less than or equal to N.
     if (text.length <= N) {
         return text;
@@ -29,13 +30,20 @@ function getAcronymOrTruncate(text, N) {
         lastMatch = match[1];
     }
 
-    // If an acronym was found, return it.
+    // If an explicit acronym was found, return it.
     if (lastMatch) {
         return lastMatch;
     }
 
+    // 3.5. Check the manual mapping before falling back to automatic generation.
+    const normalizedText = text.toLowerCase();
+    for (const [term, acronym] of Object.entries(termMap)) {
+        if (term.toLowerCase() === normalizedText) {
+            return acronym;
+        }
+    }
+
     // 4. If no acronym was found, build one with the initials.
-    // Clean the string of special characters to get the words.
     const cleanedText = text.replace(/[^a-zA-Z\s]/g, '');
 
     let initialsAcronym = cleanedText
@@ -46,12 +54,12 @@ function getAcronymOrTruncate(text, N) {
 
     // Validate that the built acronym does not exceed the limit N
     if (initialsAcronym.length > 8) {
-        // ** Modified logic to truncate the acronym and keep the last N characters **
         return initialsAcronym.slice(-8);
     }
 
     return initialsAcronym;
 }
+
 
 /**
  * Formats a DOI string to ensure it is a complete URL.

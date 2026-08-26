@@ -1,5 +1,22 @@
 let bibtexContent = "";
 
+const customAcronyms = {
+    "Journal of Systems and Software": "J. Syst. Softw.",
+    "Science of Computer Programming": "Sci. Comput. Program.",
+    "IEEE Transactions on Software Engineering": "IEEE Trans. Softw. Eng.",
+    "Software and Systems Modeling": "Softw. Syst. Model.",
+    "Information and Software Technology": "Inf. Softw. Technol.",
+    "IEEE Latin America Transactions": "IEEE Latin America Trans.",
+    "Knowledge-Based Systems": "Knowl. Based Syst.",
+    "Ad Hoc Networks": "Ad Hoc Networks",
+    "Journal of Software: Evolution and Process": "J. Softw. Evol. Process",
+    "Computers & Security": "Comput. Secur.",
+    "Sensors": "Sensors",
+    "ERCIM News": "ERCIM News",
+    "Scientific Data": "Scientific Data",
+};
+
+
 document.addEventListener('DOMContentLoaded', async() => {
     if (window.coreRankingsReady) {
         await window.coreRankingsReady;
@@ -161,7 +178,7 @@ function processBibtexFile(bibtexContent, researcherName) {
     const processedPublications = publicationsJSON.map(pub => {
       const booktitle = normalizeAccents(pub.entryTags?.booktitle || '');
       const year = parseInt(pub.entryTags?.year);
-      const icoreRanking = booktitle ? getICORERanking(booktitle, getAcronymOrTruncate(booktitle, 50), year) : null;
+      const icoreRanking = booktitle ? getICORERanking(booktitle, getAcronymOrTruncate(booktitle, 50, customAcronyms), year) : null;
       if (icoreRanking) {
         if (!icoreRanking.rank || icoreRanking.rank === '-') {
             icoreRanking.rank = pub.entryTags?.ranking || '-';
@@ -185,7 +202,7 @@ function processBibtexFile(bibtexContent, researcherName) {
         jcr: pub.entryTags?.jcr || '',
         icore: icoreRanking?.rank || null,
         authorPosition: findAuthorPosition(authors, researcherName),
-        acronym: entryType === 'book' ? 'Book' : (entryType === 'phdthesis' ? 'PhD Thesis' : (publicationType === 'dataArtifacts' ? publisher : getAcronymOrTruncate(journal || booktitle || '', 25))),
+        acronym: entryType === 'book' ? 'Book' : (entryType === 'phdthesis' ? 'PhD Thesis' : (publicationType === 'dataArtifacts' ? publisher : getAcronymOrTruncate(journal || booktitle || '', 25, customAcronyms))),
         track: capitalizeFirstLetter(pub.entryTags?.track) || '',
         awards: pub.entryTags?.awards ? pub.entryTags.awards.split(',').map(a => a.trim()) : [],
         notes: pub.entryTags?.note || '',
