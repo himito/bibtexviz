@@ -1,4 +1,4 @@
-const editions = ["2023", "2021", "2020", "2018", "2017", "2014", "2013", "2010", "2008"];
+const editions = ["2026", "2023", "2021", "2020", "2018", "2017", "2014", "2013", "2010", "2008"];
 
 // memoryCache will store ranking data grouped by edition
 const coreRankingCache = {};  // e.g. { "CORE2023": [ { title: "...", acronym: "...", rank: "A" }, ... ] }
