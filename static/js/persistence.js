@@ -4,7 +4,6 @@ const setupSaveButton = (buttonId, chartSelector, serializeFunction, extension) 
         let chart = d3.select(chartSelector);
         chart.selectAll("#collapseIcon").attr("visibility", "hidden");
         const svgElement = chart.node();
-        const originalHeight = adjustSVGSize(svgElement);
 
         const name = 'publications';
         try {
@@ -177,9 +176,11 @@ function rasterize(svg) {
         reject(e);
     };
     image.onload = () => {
-        const rect = svg.getBoundingClientRect();
-        const context = context2d(rect.width, rect.height);
-        context.drawImage(image, 0, 0, rect.width, rect.height);
+        // Use the real SVG size, not the scaled on-screen size
+        const width = +svg.getAttribute("width") || svg.getBoundingClientRect().width;
+        const height = +svg.getAttribute("height") || svg.getBoundingClientRect().height;
+        const context = context2d(width, height);
+        context.drawImage(image, 0, 0, width, height);
         context.canvas.toBlob((blob) => {
             resolve(blob);
         }, 'image/png');

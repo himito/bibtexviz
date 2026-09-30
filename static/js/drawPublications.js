@@ -675,13 +675,17 @@ function drawChart(publications, chartId) {
         .attr('transform-origin', 'center')
         .attr('style', 'transition: transform 0.2s;');
 
-    // Calcular el ancho total
-    const numColumns = groupedByYear.length;
-    const legendWidth = 500; // Ancho fijo para la leyenda
-    const svgWidth = xStart + (numColumns - 1) * columnGap + squareSize + padding + legendWidth;
+    // Compute the total size from the drawn content (including the legend)
+    const bbox = svg.node().getBBox();
+    const svgWidth = Math.ceil(bbox.x + bbox.width + padding);
+    const svgHeight = Math.ceil(Math.max(yBase + 80, bbox.y + bbox.height + padding));
 
-    d3.select("#chart")
-        .attr("width", svgWidth)
+    // width/height keep the real size (used when exporting); the viewBox lets
+    // CSS scale the chart to fit the container width
+    svg.attr("width", svgWidth)
+        .attr("height", svgHeight)
+        .attr("viewBox", `0 0 ${svgWidth} ${svgHeight}`)
+        .style("max-width", `${svgWidth}px`);
 
 }
 

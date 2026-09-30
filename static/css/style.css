@@ -71,3 +71,14 @@ body {
   display: block;      /* solo la activa se muestra */
   position: relative;  /* la activa ocupa altura normal */
 }
+
+/* The chart scales to fit the container width (uses the SVG viewBox) */
+.chart-container {
+    overflow-x: auto;
+}
+
+#chart {
+    display: block;
+    width: 100%;
+    height: auto;
+}
