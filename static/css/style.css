@@ -74,11 +74,19 @@ body {
 
 /* The chart scales to fit the container width (uses the SVG viewBox) */
 .chart-container {
-    overflow-x: auto;
+    overflow-x: hidden;
 }
 
-#chart {
+/* The legend is drawn below the chart in its own SVG, so it is not shrunk with the chart */
+#chart,
+#legend {
     display: block;
     width: 100%;
     height: auto;
+    margin: 0 auto;
+}
+
+/* Centered below the plot */
+#legend {
+    margin-top: 1rem;
 }
