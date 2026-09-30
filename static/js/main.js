@@ -171,6 +171,16 @@ function processBibtexFile(bibtexContent, researcherName) {
   try {
     // Use bibtexParse to convert the content to a JSON array
     const publicationsJSON = bibtexParse.toJSON(bibtexContent);
+
+    // BibTeX field names are case-insensitive (e.g., HAL exports use TITLE, AUTHOR, ...),
+    // so normalize them to lowercase before accessing them
+    publicationsJSON.forEach(pub => {
+      if (pub.entryTags) {
+        pub.entryTags = Object.fromEntries(
+          Object.entries(pub.entryTags).map(([key, value]) => [key.toLowerCase(), value])
+        );
+      }
+    });
     
     // Convert to a D3.js compatible format (this logic can be adjusted as needed)
     console.log("Parsed publication data:", publicationsJSON);
